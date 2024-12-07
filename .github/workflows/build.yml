@@ -1,0 +1,34 @@
+name: Build
+
+on:
+- push
+- pull_request
+
+env:
+  CARGO_INCREMENTAL: 0
+
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.platform }}
+
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Rust
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        components: rustfmt
+
+    - name: Test
+      run: cargo test --all-features
+
+    - name: Check Formatting
+      uses: actions-rust-lang/rustfmt@v1
